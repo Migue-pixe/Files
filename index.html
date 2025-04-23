@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>１２ 3</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0d0d0d;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    header {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 4em;
+      color: #00ffff;
+      text-shadow: 0 0 25px #0ff;
+      animation: neon 2s infinite alternate;
+    }
+
+    @keyframes neon {
+      from { text-shadow: 0 0 10px #0ff; }
+      to { text-shadow: 0 0 30px #0ff; }
+    }
+
+    #typed-text {
+      font-size: 1.4em;
+      color: #aaaaff;
+      margin-top: 10px;
+      height: 30px;
+    }
+
+    .menu {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 15px;
+      z-index: 100;
+    }
+
+    .menu button {
+      padding: 10px 20px;
+      background: #00ffff;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0ff;
+      transition: 0.3s;
+    }
+
+    .menu button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    .section {
+      padding: 100px 20px;
+      text-align: center;
+      transform: translateY(50px);
+      opacity: 0;
+      transition: 1s ease-out;
+    }
+
+    .visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #avatar {
+      width: 180px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #00ffff;
+      margin-bottom: 20px;
+    }
+
+    .speech {
+      display: inline-block;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #00ffff;
+      padding: 15px 25px;
+      border-radius: 20px;
+      font-size: 1.1em;
+      max-width: 90%;
+      margin-top: 10px;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="menu">
+  <button onclick="scrollToSection('main')">Avatar</button>
+  <button onclick="falar()">Falar</button>
+</div>
+
+<audio autoplay loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-dubstep.mp3" type="audio/mpeg">
+</audio>
+
+<header>
+  <h1>１２ 3</h1>
+  <div id="typed-text"></div>
+</header>
+
+<div class="section" id="main">
+  <img id="avatar" src="https://i.imgur.com/PlxWEyF.png" alt="Avatar">
+  <div class="speech" id="fala">Olá! Eu sou o Noob cibernético! Pronto para o caos digital?</div>
+</div>
+
+<script>
+  // Efeito de digitação
+  const text = "Bem-vindo ao universo interativo do １２ 3...";
+  let index = 0;
+  function typeWriter() {
+    if (index < text.length) {
+      document.getElementById("typed-text").innerHTML += text.charAt(index);
+      index++;
+      setTimeout(typeWriter, 60);
+    }
+  }
+  typeWriter();
+
+  // Rolagem suave
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Avatar falando
+  function falar() {
+    const mensagem = "Eu sou um avatar com voz! Isso é incrível, não é?";
+    const fala = document.getElementById("fala");
+    fala.innerText = mensagem;
+    const utter = new SpeechSynthesisUtterance(mensagem);
+    utter.lang = "pt-BR";
+    speechSynthesis.speak(utter);
+  }
+
+  // Partículas simples
+  const canvas = document.getElementById("bg");
+  const ctx = canvas.getContext("2d");
+  let w, h, particles;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    particles = Array.from({length: 100}, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2 + 1,
+      dx: (Math.random() - 0.5) * 2,
+      dy: (Math.random() - 0.5) * 2
+    }));
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    for (let p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#00ffff";
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+
+      if (p.x < 0 || p.x > w) p.dx *= -1;
+      if (p.y < 0 || p.y > h) p.dy *= -1;
+    }
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  animate();
+
+  // Mostrar seção com efeito
+  const section = document.querySelector('.section');
+  window.addEventListener('scroll', () => {
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight) {
+      section.classList.add('visible');
+    }
+  });
+</script>
+
+</body>
+</html>
